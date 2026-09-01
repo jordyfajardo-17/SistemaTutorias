@@ -1,0 +1,89 @@
+PlantUML
+
+@startuml Factory Method - Sistema de Tutorias
+
+!define ABSTRACT_COLOR #FF6B9D
+!define INTERFACE_COLOR #4ECDC4
+!define CONCRETE_COLOR #95E1D3
+!define CLIENT_COLOR #F38181
+
+skinparam classBackgroundColor<<abstract>> ABSTRACT_COLOR
+skinparam classBackgroundColor<<interface>> INTERFACE_COLOR
+skinparam classBackgroundColor<<concrete>> CONCRETE_COLOR
+skinparam classBackgroundColor<<client>> CLIENT_COLOR
+
+' Interfaz de Productos
+interface Notificador <<interface>> {
+  + enviar(destino: String, mensaje: String): void
+}
+
+' Implementaciones Concretas de Productos
+class NotificadorEmail <<concrete>> {
+  + enviar(destino: String, mensaje: String): void
+}
+
+class NotificadorPush <<concrete>> {
+  + enviar(destino: String, mensaje: String): void
+}
+
+class NotificadorSms <<concrete>> {
+  + enviar(destino: String, mensaje: String): void
+}
+
+' Clase Abstracta de Creadores
+abstract class NotificadorCreator <<abstract>> {
+  + crearNotificador(): Notificador*
+}
+
+' Creadores Concretos
+class EmailCreator <<concrete>> {
+  + crearNotificador(): Notificador
+}
+
+class PushCreator <<concrete>> {
+  + crearNotificador(): Notificador
+}
+
+class SmsCreator <<concrete>> {
+  + crearNotificador(): Notificador
+}
+
+' Cliente
+class App <<client>> {
+  + main(args: String[]): void
+}
+
+' Relaciones
+NotificadorCreator <|-- EmailCreator
+NotificadorCreator <|-- PushCreator
+NotificadorCreator <|-- SmsCreator
+
+Notificador <|.. NotificadorEmail
+Notificador <|.. NotificadorPush
+Notificador <|.. NotificadorSms
+
+EmailCreator -.-> NotificadorEmail : crea
+PushCreator -.-> NotificadorPush : crea
+SmsCreator -.-> NotificadorSms : crea
+
+App --> NotificadorCreator : usa
+App --> Notificador : utiliza
+
+note right of NotificadorCreator
+  Abstract Creator
+  Define la interfaz para crear productos
+end note
+
+note right of Notificador
+  Product Interface
+  Define la interfaz que implementan
+  todos los productos concretos
+end note
+
+note bottom of App
+  Cliente utiliza los creadores
+  sin conocer las clases concretas
+  de los productos específicos
+end note
+
+@enduml
